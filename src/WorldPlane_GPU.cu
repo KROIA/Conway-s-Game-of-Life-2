@@ -2,7 +2,9 @@
 
 
 
-void WorldPlane_GPU::update()
+
+
+void WorldPlane_GPU::kernelCallUpdateMap()
 {
     unsigned char* d_nextWorld = m_d_world1;
     if (d_nextWorld == m_d_currentWorld)
@@ -11,12 +13,27 @@ void WorldPlane_GPU::update()
     dim3 block_size(32, 32);
     dim3 num_blocks((m_worldSize.x + block_size.x - 1) / block_size.x, (m_worldSize.y + block_size.y - 1) / block_size.y);
     WorldPlane_GPU_kernel::updateMap << <num_blocks, block_size >> > (m_d_currentWorld, d_nextWorld,
-                                                    m_d_pixels, m_worldSize.x, m_worldSize.y);
-
-    cudaCheck(cudaMemcpy(m_painter->m_pixels, m_d_pixels, 
-                         m_worldSize.x * m_worldSize.y * 4 * sizeof(sf::Uint8), cudaMemcpyDeviceToHost));
-    m_d_currentWorld = d_nextWorld;
+                                                                      m_d_pixels, m_worldSize.x, m_worldSize.y);
 }
+void WorldPlane_GPU::Painter::fill(const sf::Color& color)
+{
+    /*sf::Uint8* pixel = m_pixels - 1;
+    for (unsigned int i = 0; i < m_width * m_height; ++i)
+    {
+        *(++pixel) = color.r;
+        *(++pixel) = color.g;
+        *(++pixel) = color.b;
+        *(++pixel) = color.a;
+    }
+
+    */
+
+    unsigned int block_size = 1024;
+    unsigned int num_blocks = (m_width * m_height + block_size - 1) / block_size;
+    WorldPlane_GPU_kernel::fillPixelColor << < num_blocks, block_size >> > (m_parent->m_d_pixels, color.r, color.g, color.b, color.a, m_width * m_height);
+}
+
+
 
 namespace WorldPlane_GPU_kernel
 {
@@ -61,6 +78,27 @@ namespace WorldPlane_GPU_kernel
             *(++pixel) = 0;
             *(++pixel) = 255;
         }
+    }
+    __global__ void fillPixelColor(sf::Uint8* d_pixels, sf::Uint8 r, sf::Uint8 g, sf::Uint8 b, sf::Uint8 a, unsigned int colorCount)
+    {
+        unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
+        if (index >= colorCount)
+            return;
+        d_pixels += colorCount;
+        d_pixels[0] = r;
+        d_pixels[1] = g;
+        d_pixels[2] = b;
+        d_pixels[3] = a;
+    }
+    __global__ void setPixelColor(sf::Uint8* d_pixels, sf::Uint8 r, sf::Uint8 g, sf::Uint8 b, sf::Uint8 a)
+    {
+        unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
+        if (index > 0)
+            return;
+        d_pixels[0] = r;
+        d_pixels[1] = g;
+        d_pixels[2] = b;
+        d_pixels[3] = a;
     }
     __device__ int getAliveNeighbourCount(unsigned int x, unsigned int y,
                                           unsigned char* d_currentWorld,

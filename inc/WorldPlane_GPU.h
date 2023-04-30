@@ -7,6 +7,7 @@ using namespace QSFML;
 class WorldPlane_GPU: public Objects::CanvasObject, public WorldPlaneLoader
 {
     class Painter;
+    friend Painter;
 public:
     WorldPlane_GPU(const sf::Vector2u& worldSize,
         const std::string& name = "WorldPlane_GPU",
@@ -21,7 +22,8 @@ public:
 
 protected:
     void update() override;
-    void cudaCheck(cudaError_t err);
+    void kernelCallUpdateMap();
+    static void cudaCheck(cudaError_t err);
 
     const sf::Vector2u m_worldSize;
     Painter* m_painter;
@@ -35,7 +37,9 @@ protected:
     class Painter : public Components::Drawable
     {
     public:
-        Painter(const sf::Vector2u& worldSize, const std::string& name = "Painter");
+        Painter(WorldPlane_GPU *parent,
+                const sf::Vector2u& worldSize,
+                const std::string& name = "Painter");
         ~Painter();
 
         void setScale(const sf::Vector2f& scale);
@@ -52,6 +56,7 @@ protected:
         
         mutable sf::Texture m_texture;
         sf::Sprite m_sprite;
+        WorldPlane_GPU* m_parent;
     };
 
 
@@ -63,6 +68,9 @@ namespace WorldPlane_GPU_kernel
                               sf::Uint8* d_pixels,
                               unsigned int worldSizeX,
                               unsigned int worldSizeY);
+    __global__ void fillPixelColor(sf::Uint8* d_pixels, sf::Uint8 r, sf::Uint8 g, sf::Uint8 b, sf::Uint8 a, unsigned int colorCount);
+    __global__ void setPixelColor(sf::Uint8* d_pixels, sf::Uint8 r, sf::Uint8 g, sf::Uint8 b, sf::Uint8 a);
+    
     __device__ int getAliveNeighbourCount(unsigned int x, unsigned int y,
                                           unsigned char *d_currentWorld,
                                           unsigned int worldSizeX, 
