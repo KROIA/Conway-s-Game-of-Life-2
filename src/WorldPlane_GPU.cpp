@@ -121,7 +121,7 @@ void WorldPlane_GPU::Painter::setScale(const sf::Vector2f& scale)
 void WorldPlane_GPU::Painter::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     //cudaDeviceSynchronize();
-    //cudaDeviceSynchronize();
+    cudaDeviceSynchronize();
     m_texture.update(m_pixels);
     target.draw(m_sprite);
 }
