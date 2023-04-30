@@ -1,4 +1,0 @@
-[submodule "Dependencies/SFML_EditorWidget"]
-	path = "Dependencies/SFML_EditorWidget"
-	url = https://github.com/KROIA/SFML_EditorWidget.git
-        branch = CMake

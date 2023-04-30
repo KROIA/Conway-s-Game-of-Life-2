@@ -37,6 +37,7 @@ bin
 build
 .vs
 
+
 # User-specific files
 *.rsuser
 *.suo
