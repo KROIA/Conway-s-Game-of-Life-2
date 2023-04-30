@@ -62,19 +62,19 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>inc;E:\Dokumente\Visual Studio 2022\Projects\SFML_EditorWidget\core\inc;E:\Dokumente\Visual Studio 2022\Projects\SFML_EditorWidget\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>inc;Dependencies\SFML_EditorWidget\core\inc;Dependencies\SFML_EditorWidget\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(CudaToolkitLibDir);E:\Dokumente\Visual Studio 2022\Projects\SFML_EditorWidget\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(CudaToolkitLibDir);Dependencies\SFML_EditorWidget\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies);$(Qt_LIBS_);SFML_EditorWidget-d.lib;sfml-graphics-d.lib;sfml-system-d.lib;sfml-window-d.lib;easy_profiler.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>inc;E:\Dokumente\Visual Studio 2022\Projects\SFML_EditorWidget\core\inc;E:\Dokumente\Visual Studio 2022\Projects\SFML_EditorWidget\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>inc;Dependencies\SFML_EditorWidget\core\inc;Dependencies\SFML_EditorWidget\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(CudaToolkitLibDir);E:\Dokumente\Visual Studio 2022\Projects\SFML_EditorWidget\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(CudaToolkitLibDir);Dependencies\SFML_EditorWidget\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies);cudart.lib;cudadevrt.lib;SFML_EditorWidget.lib;sfml-graphics.lib;sfml-system.lib;sfml-window.lib;easy_profiler.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
